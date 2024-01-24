@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import PencilIcon from "./PencilIcon";
 import Modal from "./Modal";
 import CoverImage from "../img/foto_frame_ukraine.png";
+import kiev from "../img/kiev.jpg";
 
 const Profile = () => {
   const avatarUrl = useRef(
@@ -103,6 +104,11 @@ const Profile = () => {
           src={avatarUrl.current}
           alt="Avatar"
           className="w-[450px] h-[450px] rounded-full top-10"
+        />
+        <img
+          src={kiev}
+          alt="Avatar"
+          className="w-[150px] h-[150px] rounded-full top-10"
         />
         <img
           src={CoverImage}
