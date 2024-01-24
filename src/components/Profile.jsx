@@ -2,27 +2,23 @@ import { useRef, useState, useEffect } from "react";
 import PencilIcon from "./PencilIcon";
 import Modal from "./Modal";
 import CoverImage from "../img/foto_frame_ukraine.png";
-// import kiev from "../img/kiev.jpg";
+import kiev from "../img/kiev.jpg";
 
 const Profile = () => {
-  const avatarUrl = useRef(
-    "https://photoframesupport.netlify.app/assets/kiev-X4MqWTND.jpg"
-  );
+  const [avatarUrl, setAvatarUrl] = useState(kiev);
   const [modalOpen, setModalOpen] = useState(false);
   const [combinedImageUrl, setCombinedImageUrl] = useState(null);
 
   const updateAvatar = (imgSrc) => {
-    avatarUrl.current = imgSrc;
+    setAvatarUrl(imgSrc);
   };
 
-  // ...
-
   useEffect(() => {
-    if (avatarUrl.current) {
+    if (avatarUrl) {
       const avatarImage = new Image();
       const coverImage = new Image();
 
-      avatarImage.src = avatarUrl.current;
+      avatarImage.src = avatarUrl;
       coverImage.src = CoverImage;
 
       avatarImage.onload = () => {
@@ -67,9 +63,7 @@ const Profile = () => {
         setCombinedImageUrl(combinedImageURL);
       };
     }
-  }, [avatarUrl.current]);
-
-  // ...
+  }, [avatarUrl]);
 
   const handleDownload = () => {
     if (combinedImageUrl) {
@@ -101,7 +95,7 @@ const Profile = () => {
     <div className="flex flex-col items-center pt-12">
       <div className="relative flex justify-center items-center px-10">
         <img
-          src={avatarUrl.current}
+          src={avatarUrl}
           alt="Avatar"
           className="w-[450px] h-[450px] rounded-full top-10"
         />
@@ -137,7 +131,7 @@ const Profile = () => {
             Download Combined Image
           </button>
           <button
-            className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mr-2"
+            className="bg-purple-500 hover.bg-purple-700 text-white font-bold py-2 px-4 rounded mr-2"
             onClick={openInstagramApp}
           >
             Share on Instagram
