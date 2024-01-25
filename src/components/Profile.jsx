@@ -44,6 +44,11 @@ const Profile = () => {
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
 
+        // Set devicePixelRatio manually to reduce the pixel density
+        const devicePixelRatioCap = Math.min(2, window.devicePixelRatio);
+        const originalDevicePixelRatio = window.devicePixelRatio;
+        window.devicePixelRatio = devicePixelRatioCap;
+
         // Calculate the radius for the circular clip path
         const radius = canvasWidth / 2;
 
@@ -76,6 +81,9 @@ const Profile = () => {
 
         // Set the combined image URL
         setCombinedImageUrl(combinedImageURL);
+
+        // Reset the devicePixelRatio to its original value
+        window.devicePixelRatio = originalDevicePixelRatio;
       };
     }
   }, [avatarUrl.current]);
