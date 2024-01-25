@@ -12,6 +12,7 @@ const MIN_DIMENSION = 250;
 const ImageCropper = ({ closeModal, updateAvatar }) => {
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
+  const fileInputRef = useRef(null);
   const [imgSrc, setImgSrc] = useState("");
   const [crop, setCrop] = useState();
   const [error, setError] = useState("");
@@ -56,16 +57,27 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
     setCrop(centeredCrop);
   };
 
+  const onButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
   return (
     <>
       <label className="block mb-3 w-fit">
         <span className="sr-only">Choose profile photo</span>
         <input
+          ref={fileInputRef}
           type="file"
           accept="image/*"
           onChange={onSelectFile}
-          className="block w-full text-sm text-slate-500 file:mr-4 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-xs file:bg-gray-700 file:text-sky-300 hover:file:bg-gray-600"
+          style={{ display: "none" }} // hide the default input
         />
+        <button
+          className="block w-full text-sm text-white bg-blue-500 hover:bg-blue-400 file:mr-4 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-xs file:bg-gray-700 file:text-sky-300 hover:file:bg-gray-600"
+          onClick={onButtonClick}
+        >
+          Choose profile photo
+        </button>
       </label>
       {error && <p className="text-red-400 text-xs">{error}</p>}
       {imgSrc && (
@@ -123,4 +135,5 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
     </>
   );
 };
+
 export default ImageCropper;
