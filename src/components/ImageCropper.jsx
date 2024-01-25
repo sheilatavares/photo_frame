@@ -21,6 +21,11 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (!file.type.startsWith("image/")) {
+      setError("Please, select a valid image format");
+      return setImgSrc("");
+    }
+
     const reader = new FileReader();
     reader.addEventListener("load", () => {
       const imageElement = new Image();

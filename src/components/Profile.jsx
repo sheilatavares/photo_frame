@@ -27,19 +27,32 @@ const Profile = () => {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
 
-        // Set canvas dimensions to match the cover image
-        canvas.width = coverImage.width;
-        canvas.height = coverImage.height;
+        // Choose a maximum canvas size
+        const maxCanvasSize = 4000; // Adjust this value as needed
+
+        // Calculate the scaled dimensions for the canvas
+        let canvasWidth = coverImage.width;
+        let canvasHeight = coverImage.height;
+
+        if (canvasWidth * canvasHeight > maxCanvasSize) {
+          const scale = Math.sqrt(maxCanvasSize / (canvasWidth * canvasHeight));
+          canvasWidth *= scale;
+          canvasHeight *= scale;
+        }
+
+        // Set canvas dimensions
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
 
         // Calculate the radius for the circular clip path
-        const radius = coverImage.width / 2;
+        const radius = canvasWidth / 2;
 
         // Draw avatar image with a circular clip path
         ctx.save();
         ctx.beginPath();
         ctx.arc(
-          coverImage.width / 2,
-          coverImage.height / 2,
+          canvasWidth / 2,
+          canvasHeight / 2,
           radius - 28, // Adjusting the radius to make the avatar 56px smaller
           0,
           2 * Math.PI
@@ -49,14 +62,14 @@ const Profile = () => {
 
         // Adjust the position of the avatar image to fit within the cover image
         const avatarSize = (radius - 28) * 2; // Adjusting the size to make the avatar 56px smaller
-        const avatarX = coverImage.width / 2 - avatarSize / 2;
-        const avatarY = coverImage.height / 2 - avatarSize / 2;
+        const avatarX = canvasWidth / 2 - avatarSize / 2;
+        const avatarY = canvasHeight / 2 - avatarSize / 2;
 
         ctx.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
         ctx.restore();
 
         // Draw cover image
-        ctx.drawImage(coverImage, 0, 0, coverImage.width, coverImage.height);
+        ctx.drawImage(coverImage, 0, 0, canvasWidth, canvasHeight);
 
         // Get data URL from canvas
         const combinedImageURL = canvas.toDataURL("image/png");
@@ -76,21 +89,6 @@ const Profile = () => {
       link.click();
       document.body.removeChild(link);
     }
-  };
-
-  const openInstagramApp = () => {
-    // Replace with the Instagram URL scheme for sharing
-    window.open("instagram://app");
-  };
-
-  const openFacebookApp = () => {
-    // Replace with the Facebook URL scheme for sharing
-    window.open("fb://facewebmodal/f?href=YOUR_URL");
-  };
-
-  const openTwitterApp = () => {
-    // Replace with the Twitter URL scheme for sharing
-    window.open("twitter://post?message=Your+tweet+text+here");
   };
 
   return (
