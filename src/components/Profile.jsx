@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import PencilIcon from "./PencilIcon";
 import Modal from "./Modal";
 import CoverImage from "../img/photo_frame_ukraine2.png";
+import "./Profile.css"; // Import the new stylesheet
 
 const Profile = () => {
   const avatarUrl = useRef(
@@ -98,18 +99,18 @@ const Profile = () => {
         <img
           src={avatarUrl.current}
           alt="Avatar"
-          className="w-[250px] h-[250px] rounded-full top-10"
+          className="w-48 h-48 md:w-64 md:h-64 rounded-full top-10" // Responsive sizing
         />
         <img
           src={CoverImage}
           alt="Cover Image"
-          className="w-[307px] h-[307px] absolute object-cover"
+          className="w-60 h-60 md:w-80 md:h-80 absolute object-cover" // Responsive sizing
         />
       </div>
 
       <button
-        className="left-0 right-0 m-auto w-fit p-[.35rem] rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-600"
-        style={{ marginTop: "70px" }}
+        className="m-auto w-fit p-2 md:p-4 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-600"
+        style={{ marginTop: "2rem" }}
         title="Change photo"
         onClick={() => setModalOpen(true)}
       >
@@ -131,24 +132,7 @@ const Profile = () => {
           >
             Download Combined Image
           </button>
-          {/* <button
-            className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mr-2"
-            onClick={openInstagramApp}
-          >
-            Share on Instagram
-          </button>
-          <button
-            className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
-            onClick={openFacebookApp}
-          >
-            Share on Facebook
-          </button>
-          <button
-            className="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ml-2"
-            onClick={openTwitterApp}
-          >
-            Share on Twitter
-          </button> */}
+          {/* Other buttons (commented out for brevity) */}
         </div>
       )}
     </div>
