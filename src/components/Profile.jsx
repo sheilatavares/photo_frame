@@ -1,24 +1,25 @@
 import { useRef, useState, useEffect } from "react";
 import PencilIcon from "./PencilIcon";
 import Modal from "./Modal";
-import CoverImage from "../img/foto_frame_ukraine.png";
-import kiev from "../img/kiev.jpg";
+import CoverImage from "../img/photo_frame_ukraine2.png";
 
 const Profile = () => {
-  const [avatarUrl, setAvatarUrl] = useState(kiev);
+  const avatarUrl = useRef(
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/View_of_Podil_from_Kiev.jpg/800px-View_of_Podil_from_Kiev.jpg"
+  );
   const [modalOpen, setModalOpen] = useState(false);
   const [combinedImageUrl, setCombinedImageUrl] = useState(null);
 
   const updateAvatar = (imgSrc) => {
-    setAvatarUrl(imgSrc);
+    avatarUrl.current = imgSrc;
   };
 
   useEffect(() => {
-    if (avatarUrl) {
+    if (avatarUrl.current) {
       const avatarImage = new Image();
       const coverImage = new Image();
 
-      avatarImage.src = avatarUrl;
+      avatarImage.src = avatarUrl.current;
       coverImage.src = CoverImage;
 
       avatarImage.onload = () => {
@@ -38,19 +39,19 @@ const Profile = () => {
         ctx.arc(
           coverImage.width / 2,
           coverImage.height / 2,
-          radius,
+          radius - 28, // Adjusting the radius to make the avatar 56px smaller
           0,
           2 * Math.PI
         );
         ctx.closePath();
         ctx.clip();
-        ctx.drawImage(
-          avatarImage,
-          (coverImage.width - avatarImage.width) / 2,
-          (coverImage.height - avatarImage.height) / 2,
-          avatarImage.width,
-          avatarImage.height
-        );
+
+        // Adjust the position of the avatar image to fit within the cover image
+        const avatarSize = (radius - 28) * 2; // Adjusting the size to make the avatar 56px smaller
+        const avatarX = coverImage.width / 2 - avatarSize / 2;
+        const avatarY = coverImage.height / 2 - avatarSize / 2;
+
+        ctx.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
         ctx.restore();
 
         // Draw cover image
@@ -63,7 +64,7 @@ const Profile = () => {
         setCombinedImageUrl(combinedImageURL);
       };
     }
-  }, [avatarUrl]);
+  }, [avatarUrl.current]);
 
   const handleDownload = () => {
     if (combinedImageUrl) {
@@ -95,14 +96,14 @@ const Profile = () => {
     <div className="flex flex-col items-center pt-12">
       <div className="relative flex justify-center items-center px-10">
         <img
-          src={avatarUrl}
+          src={avatarUrl.current}
           alt="Avatar"
-          className="w-[450px] h-[450px] rounded-full top-10"
+          className="w-[250px] h-[250px] rounded-full top-10"
         />
         <img
           src={CoverImage}
           alt="Cover Image"
-          className="w-[530px] h-[530px] absolute object-cover"
+          className="w-[307px] h-[307px] absolute object-cover"
         />
       </div>
 
@@ -130,8 +131,8 @@ const Profile = () => {
           >
             Download Combined Image
           </button>
-          <button
-            className="bg-purple-500 hover.bg-purple-700 text-white font-bold py-2 px-4 rounded mr-2"
+          {/* <button
+            className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mr-2"
             onClick={openInstagramApp}
           >
             Share on Instagram
@@ -147,7 +148,7 @@ const Profile = () => {
             onClick={openTwitterApp}
           >
             Share on Twitter
-          </button>
+          </button> */}
         </div>
       )}
     </div>

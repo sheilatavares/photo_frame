@@ -7,7 +7,7 @@ import ReactCrop, {
 import setCanvasPreview from "../setCanvasPreview";
 
 const ASPECT_RATIO = 1;
-const MIN_DIMENSION = 450;
+const MIN_DIMENSION = 250;
 
 const ImageCropper = ({ closeModal, updateAvatar }) => {
   const imgRef = useRef(null);
@@ -30,7 +30,7 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
         if (error) setError("");
         const { naturalWidth, naturalHeight } = e.currentTarget;
         if (naturalWidth < MIN_DIMENSION || naturalHeight < MIN_DIMENSION) {
-          setError("Image must be at least 450 x 450 pixels.");
+          setError("Image must be at least 250 x 250 pixels.");
           return setImgSrc("");
         }
       });
