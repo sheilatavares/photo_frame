@@ -18,6 +18,11 @@ const Profile = () => {
 
   useEffect(() => {
     if (originalAvatarUrl.current) {
+      // Defensive coding to ensure this logic is not executed unnecessarily
+      if (resizedImageUrl || combinedImageURL) {
+        return;
+      }
+
       const avatarImage = new Image();
       avatarImage.src = originalAvatarUrl.current;
 
@@ -26,11 +31,14 @@ const Profile = () => {
         const ctx = canvas.getContext("2d");
 
         // Set canvas dimensions to match the avatar image
-        const canvasWidth = 200; // Set to the desired display width
-        const canvasHeight = 200; // Set to the desired display height
+        const canvasWidth = 307; // Set to the desired display width
+        const canvasHeight = 307; // Set to the desired display height
 
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
+
+        // Clear the canvas context
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
         // Calculate the radius for the circular clip path
         const radius = canvasWidth / 2;
@@ -67,16 +75,36 @@ const Profile = () => {
         coverImage.src = CoverImage;
 
         coverImage.onload = () => {
+          // Clear the canvas context before drawing new images
           ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-          ctx.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
+
+          // Draw avatar image again with circular clip path
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(
+            canvasWidth / 2,
+            canvasHeight / 2,
+            radius - 28,
+            0,
+            2 * Math.PI
+          );
+          ctx.closePath();
+          ctx.clip();
+
+          // Draw cover image
           ctx.drawImage(coverImage, 0, 0, canvasWidth, canvasHeight);
+
+          // Draw avatar image with circular clip path
+          ctx.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
+
+          ctx.restore();
 
           const combinedImageURL = canvas.toDataURL("image/png");
           setCombinedImageURL(combinedImageURL);
         };
       };
     }
-  }, [originalAvatarUrl.current]);
+  }, [originalAvatarUrl.current, resizedImageUrl, combinedImageURL]);
 
   const handleDownload = () => {
     if (combinedImageURL) {
