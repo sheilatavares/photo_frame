@@ -2,10 +2,9 @@ import { useRef, useState, useEffect } from "react";
 import PencilIcon from "./PencilIcon";
 import Modal from "./Modal";
 import CoverImage from "../img/photo_frame_ukraine2.png";
-import "./Profile.css";
+import "./Profile.css"; // Import the new stylesheet
 
 const Profile = () => {
-  const canvasRef = useRef(null);
   const avatarUrl = useRef(
     "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/View_of_Podil_from_Kiev.jpg/800px-View_of_Podil_from_Kiev.jpg"
   );
@@ -17,10 +16,7 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-
+    if (avatarUrl.current) {
       const avatarImage = new Image();
       const coverImage = new Image();
 
@@ -28,8 +24,8 @@ const Profile = () => {
       coverImage.src = CoverImage;
 
       avatarImage.onload = () => {
-        // Clear the canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
 
         // Set canvas dimensions to match the cover image
         canvas.width = coverImage.width;
@@ -82,18 +78,33 @@ const Profile = () => {
     }
   };
 
+  const openInstagramApp = () => {
+    // Replace with the Instagram URL scheme for sharing
+    window.open("instagram://app");
+  };
+
+  const openFacebookApp = () => {
+    // Replace with the Facebook URL scheme for sharing
+    window.open("fb://facewebmodal/f?href=YOUR_URL");
+  };
+
+  const openTwitterApp = () => {
+    // Replace with the Twitter URL scheme for sharing
+    window.open("twitter://post?message=Your+tweet+text+here");
+  };
+
   return (
     <div className="flex flex-col items-center pt-12">
       <div className="relative flex justify-center items-center px-10">
-        <canvas
-          ref={canvasRef}
-          id="canvas"
-          className="w-48 h-48 md:w-64 md:h-64 rounded-full top-10"
-        ></canvas>
+        <img
+          src={avatarUrl.current}
+          alt="Avatar"
+          className="w-48 h-48 md:w-64 md:h-64 rounded-full top-10" // Responsive sizing
+        />
         <img
           src={CoverImage}
           alt="Cover Image"
-          className="w-60 h-60 md:w-80 md:h-80 absolute object-cover"
+          className="w-60 h-60 md:w-80 md:h-80 absolute object-cover" // Responsive sizing
         />
       </div>
 

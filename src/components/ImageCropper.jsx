@@ -22,7 +22,7 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setError("Please, select a valid image format");
+      setError("Please, select a valid image");
       return setImgSrc("");
     }
 
