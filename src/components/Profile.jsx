@@ -26,8 +26,8 @@ const Profile = () => {
         const ctx = canvas.getContext("2d");
 
         // Set canvas dimensions to match the avatar image
-        const canvasWidth = 250; // Set to the desired display width
-        const canvasHeight = 250; // Set to the desired display height
+        const canvasWidth = 200; // Set to the desired display width
+        const canvasHeight = 200; // Set to the desired display height
 
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
@@ -95,7 +95,7 @@ const Profile = () => {
         <img
           src={resizedImageUrl} // Use the resized image URL
           alt="Avatar"
-          className="w-48 h-48 md:w-64 md:h-64 top-10" // Responsive sizing
+          className="w-48 h-48 md:w-80 md:h-80 rounded-full top-10" // Responsive sizing
         />
         <img
           src={CoverImage}
