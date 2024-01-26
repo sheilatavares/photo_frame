@@ -2,7 +2,15 @@ import { useRef, useState, useEffect } from "react";
 import PencilIcon from "./PencilIcon";
 import Modal from "./Modal";
 import CoverImage from "../img/photo_frame_ukraine2.png";
-import "./Profile.css"; // Import the new stylesheet
+import "./Profile.css";
+
+// Function to release a canvas
+function releaseCanvas(canvas) {
+  canvas.width = 1;
+  canvas.height = 1;
+  const ctx = canvas.getContext("2d");
+  ctx && ctx.clearRect(0, 0, 1, 1);
+}
 
 const Profile = () => {
   const originalAvatarUrl = useRef(
@@ -67,6 +75,9 @@ const Profile = () => {
         // Get data URL from canvas
         const resizedImageURL = canvas.toDataURL("image/png");
 
+        // Release the canvas to help with memory management
+        releaseCanvas(canvas);
+
         // Set the resized image URL (for display in the profile component)
         setResizedImageUrl(resizedImageURL);
 
@@ -99,7 +110,12 @@ const Profile = () => {
 
           ctx.restore();
 
+          // Get data URL from canvas
           const combinedImageURL = canvas.toDataURL("image/png");
+
+          // Release the canvas to help with memory management
+          releaseCanvas(canvas);
+
           setCombinedImageURL(combinedImageURL);
         };
       };
