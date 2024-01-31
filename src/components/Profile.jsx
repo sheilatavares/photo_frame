@@ -1,128 +1,124 @@
-import { useRef, useState, useEffect } from "react";
-import PencilIcon from "./PencilIcon";
-import Modal from "./Modal";
-import CoverImage from "../img/photo_frame_ukraine2.png";
-import "./Profile.css"; // Import the new stylesheet
+import React, { useRef, useEffect, useState } from "react";
 
 const Profile = () => {
-  const avatarUrl = useRef(
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/View_of_Podil_from_Kiev.jpg/800px-View_of_Podil_from_Kiev.jpg"
-  );
-  const [modalOpen, setModalOpen] = useState(false);
-  const [combinedImageUrl, setCombinedImageUrl] = useState(null);
-
-  const updateAvatar = (imgSrc) => {
-    avatarUrl.current = imgSrc;
-  };
+  const [textTitle, setTextTitle] = useState("Overlay text");
+  const imageLoaderRef = useRef(null);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    if (avatarUrl.current) {
-      const avatarImage = new Image();
-      const coverImage = new Image();
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    img.crossOrigin = "anonymous";
 
-      avatarImage.src = avatarUrl.current;
-      coverImage.src = CoverImage;
+    const imageLoader = imageLoaderRef.current;
+    imageLoader.addEventListener("change", handleImage);
 
-      avatarImage.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
+    window.addEventListener("load", drawPlaceholder);
 
-        // Set canvas dimensions to a smaller size
-        const canvasWidth = Math.min(coverImage.width, 800); // Adjust the width as needed
-        const canvasHeight = Math.min(coverImage.height, 800); // Adjust the height as needed
-
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
-
-        // Calculate the radius for the circular clip path
-        const radius = Math.min(canvasWidth, canvasHeight) / 2;
-
-        // Draw avatar image with a circular clip path
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(
-          canvasWidth / 2,
-          canvasHeight / 2,
-          radius - 28, // Adjusting the radius to make the avatar 56px smaller
-          0,
-          2 * Math.PI
-        );
-        ctx.closePath();
-        ctx.clip();
-
-        // Adjust the position of the avatar image to fit within the canvas
-        const avatarSize = (radius - 28) * 2; // Adjusting the size to make the avatar 56px smaller
-        const avatarX = canvasWidth / 2 - avatarSize / 2;
-        const avatarY = canvasHeight / 2 - avatarSize / 2;
-
-        ctx.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
-        ctx.restore();
-
-        // Draw cover image
-        ctx.drawImage(coverImage, 0, 0, canvasWidth, canvasHeight);
-
-        // Get blob URL from canvas
-        canvas.toBlob((blob) => {
-          const combinedImageURL = URL.createObjectURL(blob);
-          setCombinedImageUrl(combinedImageURL);
-        }, "image/png");
+    function drawPlaceholder() {
+      img.onload = function () {
+        drawOverlay(img);
+        drawText();
+        dynamicText(img);
       };
+      img.src = "https://unsplash.it/400/400/?random";
     }
-  }, [avatarUrl.current]);
 
-  const handleDownload = () => {
-    if (combinedImageUrl) {
-      const link = document.createElement("a");
-      link.href = combinedImageUrl;
-      link.download = "combined_image.png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    function drawOverlay(img) {
+      ctx.drawImage(img, 0, 0);
+      ctx.fillStyle = "rgba(30, 144, 255, 0.4)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
+
+    function drawText() {
+      ctx.fillStyle = "white";
+      ctx.textBaseline = "middle";
+      ctx.font = "50px 'Montserrat'";
+      ctx.fillText(textTitle, 50, 50);
+    }
+
+    function dynamicText(img) {
+      document.getElementById("name").addEventListener("keyup", function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawOverlay(img);
+        drawText();
+        setTextTitle(this.value);
+        ctx.fillText(textTitle, 50, 50);
+      });
+    }
+
+    return () => {
+      window.removeEventListener("load", drawPlaceholder);
+      imageLoader.removeEventListener("change", handleImage);
+    };
+  }, [textTitle]);
+
+  const handleImage = (e) => {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const img = new Image();
+      img.onload = function () {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = event.target.result;
+      const canvas = canvasRef.current;
+      canvas.classList.add("show");
+      drawOverlay(img);
+      drawText();
+      dynamicText(img);
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
+  };
+
+  const convertToImage = () => {
+    const canvas = canvasRef.current;
+    window.open(canvas.toDataURL("png"));
   };
 
   return (
     <div className="flex flex-col items-center pt-12">
-      <div className="relative flex justify-center items-center px-10">
-        <img
-          src={avatarUrl.current}
-          alt="Avatar"
-          className="w-48 h-48 md:w-64 md:h-64 rounded-full top-10" // Responsive sizing
-        />
-        <img
-          src={CoverImage}
-          alt="Cover Image"
-          className="w-60 h-60 md:w-80 md:h-80 absolute object-cover" // Responsive sizing
-        />
-      </div>
+      <h1>Overlay text on canvas image and save as base64</h1>
+      <div className="page-wrap">
+        <div className="controls">
+          <input
+            className="controls__input"
+            type="file"
+            id="imageLoader"
+            name="imageLoader"
+            ref={imageLoaderRef}
+          />
+          <label className="controls__label" htmlFor="name">
+            First, choose an image.
+          </label>
 
-      <button
-        className="m-auto w-fit p-2 md:p-4 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-600"
-        style={{ marginTop: "2rem" }}
-        title="Change photo"
-        onClick={() => setModalOpen(true)}
-      >
-        <PencilIcon />
-      </button>
-
-      {modalOpen && (
-        <Modal
-          updateAvatar={updateAvatar}
-          closeModal={() => setModalOpen(false)}
-        />
-      )}
-
-      {combinedImageUrl && (
-        <div className="flex mt-4">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-            onClick={handleDownload}
-          >
-            Download Combined Image
-          </button>
-          {/* Other buttons (commented out for brevity) */}
+          <input
+            className="controls__input"
+            id="name"
+            type="text"
+            value={textTitle}
+            onChange={(e) => setTextTitle(e.target.value)}
+          />
+          <label className="controls__label" htmlFor="name">
+            Overlay Text
+          </label>
         </div>
-      )}
+        <div id="canvas-wrap">
+          <canvas
+            style={{ display: "block" }}
+            id="imageCanvas"
+            width="400"
+            height="400"
+            ref={canvasRef}
+          ></canvas>
+        </div>
+      </div>
+      <button onClick={convertToImage}>Download Image</button>
     </div>
   );
 };
