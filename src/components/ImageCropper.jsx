@@ -7,12 +7,11 @@ import ReactCrop, {
 import setCanvasPreview from "../setCanvasPreview";
 
 const ASPECT_RATIO = 1;
-const MIN_DIMENSION = 250;
+const MIN_DIMENSION = 150;
 
 const ImageCropper = ({ closeModal, updateAvatar }) => {
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
-  const fileInputRef = useRef(null);
   const [imgSrc, setImgSrc] = useState("");
   const [crop, setCrop] = useState();
   const [error, setError] = useState("");
@@ -20,11 +19,6 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
   const onSelectFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      setError("Please, select a valid image");
-      return setImgSrc("");
-    }
 
     const reader = new FileReader();
     reader.addEventListener("load", () => {
@@ -36,7 +30,7 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
         if (error) setError("");
         const { naturalWidth, naturalHeight } = e.currentTarget;
         if (naturalWidth < MIN_DIMENSION || naturalHeight < MIN_DIMENSION) {
-          setError("Image must be at least 250 x 250 pixels.");
+          setError("Image must be at least 150 x 150 pixels.");
           return setImgSrc("");
         }
       });
@@ -62,27 +56,16 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
     setCrop(centeredCrop);
   };
 
-  const onButtonClick = () => {
-    fileInputRef.current.click();
-  };
-
   return (
     <>
       <label className="block mb-3 w-fit">
         <span className="sr-only">Choose profile photo</span>
         <input
-          ref={fileInputRef}
           type="file"
           accept="image/*"
           onChange={onSelectFile}
-          style={{ display: "none" }} // hide the default input
+          className="block w-full text-sm text-slate-500 file:mr-4 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-xs file:bg-gray-700 file:text-sky-300 hover:file:bg-gray-600"
         />
-        <button
-          className="block w-full text-sm text-white bg-blue-500 hover:bg-blue-400 file:mr-4 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-xs file:bg-gray-700 file:text-sky-300 hover:file:bg-gray-600"
-          onClick={onButtonClick}
-        >
-          Choose profile photo
-        </button>
       </label>
       {error && <p className="text-red-400 text-xs">{error}</p>}
       {imgSrc && (
@@ -140,5 +123,4 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
     </>
   );
 };
-
 export default ImageCropper;
