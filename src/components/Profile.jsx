@@ -28,8 +28,8 @@ const Profile = () => {
         const ctx = canvas.getContext("2d");
 
         // Set canvas dimensions to a smaller size
-        const canvasWidth = Math.min(coverImage.width, 300); // Adjust the width as needed
-        const canvasHeight = Math.min(coverImage.height, 300); // Adjust the height as needed
+        const canvasWidth = Math.min(coverImage.width, 800); // Adjust the width as needed
+        const canvasHeight = Math.min(coverImage.height, 800); // Adjust the height as needed
 
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
