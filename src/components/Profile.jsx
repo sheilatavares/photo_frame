@@ -51,21 +51,43 @@ const Profile = () => {
   }, [textTitle]);
 
   const handleImage = (newDataUrl) => {
-    const img = new Image();
-    img.onload = function () {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const img = new Image();
+      img.onload = function () {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        drawOverlay(img);
+        drawText();
+        dynamicText(img);
+      };
+
+      img.src = event.target.result;
       const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
-      drawOverlay(img);
-      drawText();
-      dynamicText(img);
+      canvas.classList.add("show");
     };
 
-    img.src = newDataUrl;
-    const canvas = canvasRef.current;
-    canvas.classList.add("show");
+    // Convert the newDataUrl to a Blob and read as data URL
+    const blob = dataURLtoBlob(newDataUrl);
+    reader.readAsDataURL(blob);
+  };
+
+  // Helper function to convert data URL to Blob
+  const dataURLtoBlob = (dataURL) => {
+    const parts = dataURL.split(";base64,");
+    const contentType = parts[0].split(":")[1];
+    const raw = window.atob(parts[1]);
+    const rawLength = raw.length;
+    const uInt8Array = new Uint8Array(rawLength);
+
+    for (let i = 0; i < rawLength; ++i) {
+      uInt8Array[i] = raw.charCodeAt(i);
+    }
+
+    return new Blob([uInt8Array], { type: contentType });
   };
 
   const convertToImage = () => {
