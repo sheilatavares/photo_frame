@@ -1,18 +1,31 @@
 import React, { useRef, useEffect, useState } from "react";
+import PencilIcon from "./PencilIcon";
+import Modal from "./Modal";
+import CoverImage from "../img/photo_frame_ukraine2.png";
+import "./Profile.css"; // Import the new stylesheet
 
 const Profile = () => {
   const [textTitle, setTextTitle] = useState("Overlay text");
+  const [modalOpen, setModalOpen] = useState(false);
   const imageLoaderRef = useRef(null);
   const canvasRef = useRef(null);
 
+  const updateAvatar = (newDataUrl) => {
+    avatarUrl.current = newDataUrl;
+    handleImage(newDataUrl);
+  };
+  const avatarUrl = useRef(
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/View_of_Podil_from_Kiev.jpg/800px-View_of_Podil_from_Kiev.jpg"
+  );
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const img = new Image();
     img.crossOrigin = "anonymous";
 
-    const imageLoader = imageLoaderRef.current;
-    imageLoader.addEventListener("change", handleImage);
+    // const imageLoader = imageLoaderRef.current;
+
+    // imageLoader.addEventListener("change", handleImage);
 
     window.addEventListener("load", drawPlaceholder);
 
@@ -31,49 +44,28 @@ const Profile = () => {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    function drawText() {
-      ctx.fillStyle = "white";
-      ctx.textBaseline = "middle";
-      ctx.font = "50px 'Montserrat'";
-      ctx.fillText(textTitle, 50, 50);
-    }
-
-    function dynamicText(img) {
-      document.getElementById("name").addEventListener("keyup", function () {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawOverlay(img);
-        drawText();
-        setTextTitle(this.value);
-        ctx.fillText(textTitle, 50, 50);
-      });
-    }
-
     return () => {
       window.removeEventListener("load", drawPlaceholder);
-      imageLoader.removeEventListener("change", handleImage);
+      // imageLoader.removeEventListener("change", handleImage);
     };
   }, [textTitle]);
 
-  const handleImage = (e) => {
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      const img = new Image();
-      img.onload = function () {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-      };
-      img.src = event.target.result;
+  const handleImage = (newDataUrl) => {
+    const img = new Image();
+    img.onload = function () {
       const canvas = canvasRef.current;
-      canvas.classList.add("show");
+      const ctx = canvas.getContext("2d");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
       drawOverlay(img);
       drawText();
       dynamicText(img);
     };
 
-    reader.readAsDataURL(e.target.files[0]);
+    img.src = newDataUrl;
+    const canvas = canvasRef.current;
+    canvas.classList.add("show");
   };
 
   const convertToImage = () => {
@@ -83,29 +75,32 @@ const Profile = () => {
 
   return (
     <div className="flex flex-col items-center pt-12">
-      <h1>Overlay text on canvas image and save as base64</h1>
       <div className="page-wrap">
         <div className="controls">
-          <input
+          {/* <input
             className="controls__input"
             type="file"
             id="imageLoader"
             name="imageLoader"
             ref={imageLoaderRef}
-          />
+          /> */}
+          <button
+            className="m-auto w-fit p-2 md:p-4 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-600"
+            style={{ marginTop: "2rem" }}
+            title="Change photo"
+            onClick={() => setModalOpen(true)}
+          >
+            <PencilIcon />
+          </button>
+
+          {modalOpen && (
+            <Modal
+              updateAvatar={updateAvatar}
+              closeModal={() => setModalOpen(false)}
+            />
+          )}
           <label className="controls__label" htmlFor="name">
             First, choose an image.
-          </label>
-
-          <input
-            className="controls__input"
-            id="name"
-            type="text"
-            value={textTitle}
-            onChange={(e) => setTextTitle(e.target.value)}
-          />
-          <label className="controls__label" htmlFor="name">
-            Overlay Text
           </label>
         </div>
         <div id="canvas-wrap">
