@@ -64,7 +64,7 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
           type="file"
           accept="image/*"
           onChange={onSelectFile}
-          style={{ fontSize: "1rem" }}
+          style={{ fontSize: "1.25rem" }}
           className="block w-full text-sm text-slate-500 file:mr-4 file:py-1 file:px-2 file:rounded-full file:border-0 file:bg-gray-700 file:text-sky-300 hover:file:bg-gray-600"
         />
       </label>
