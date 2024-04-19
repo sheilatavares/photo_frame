@@ -15,6 +15,23 @@ const Profile = () => {
     avatarUrl.current = imgSrc;
   };
 
+  const resizeImage = (image) => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // Set canvas dimensions to a smaller size
+    const canvasWidth = Math.min(image.width, 300); // Adjust the width as needed
+    const canvasHeight = Math.min(image.height, 300); // Adjust the height as needed
+
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+
+    // Draw image on canvas
+    ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+
+    return canvas;
+  };
+
   useEffect(() => {
     if (avatarUrl.current) {
       const avatarImage = new Image();
@@ -24,42 +41,11 @@ const Profile = () => {
       coverImage.src = CoverImage;
 
       avatarImage.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        // Set canvas dimensions to a smaller size
-        const canvasWidth = Math.min(coverImage.width, 300); // Adjust the width as needed
-        const canvasHeight = Math.min(coverImage.height, 300); // Adjust the height as needed
-
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
-
-        // Calculate the radius for the circular clip path
-        const radius = Math.min(canvasWidth, canvasHeight) / 2;
-
-        // Draw avatar image with a circular clip path
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(
-          canvasWidth / 2,
-          canvasHeight / 2,
-          radius - 28, // Adjusting the radius to make the avatar 56px smaller
-          0,
-          2 * Math.PI
-        );
-        ctx.closePath();
-        ctx.clip();
-
-        // Adjust the position of the avatar image to fit within the canvas
-        const avatarSize = (radius - 28) * 2; // Adjusting the size to make the avatar 56px smaller
-        const avatarX = canvasWidth / 2 - avatarSize / 2;
-        const avatarY = canvasHeight / 2 - avatarSize / 2;
-
-        ctx.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
-        ctx.restore();
+        const canvas = resizeImage(avatarImage);
 
         // Draw cover image
-        ctx.drawImage(coverImage, 0, 0, canvasWidth, canvasHeight);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(coverImage, 0, 0, canvas.width, canvas.height);
 
         // Get blob URL from canvas
         canvas.toBlob((blob) => {
