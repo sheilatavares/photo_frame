@@ -75,11 +75,13 @@ const Profile = () => {
           alt="Avatar"
           className="w-48 h-48 md:w-64 md:h-64 rounded-full top-10" // Responsive sizing
         />
-        <img
-          src={CoverImage}
-          alt="Cover Image"
-          className="w-60 h-60 md:w-80 md:h-80 absolute object-cover" // Responsive sizing
-        />
+        <div className="w-60 h-60 md:w-80 md:h-80 absolute">
+          <img
+            src={CoverImage}
+            alt="Cover Image"
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
 
       <button
@@ -89,6 +91,7 @@ const Profile = () => {
         onClick={() => setModalOpen(true)}
       >
         <PencilIcon />
+        Pencil
       </button>
 
       {modalOpen && (
