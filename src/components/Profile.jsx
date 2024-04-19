@@ -99,15 +99,12 @@ const Profile = () => {
       </div>
 
       <button
-        className="m-auto flex items-center justify-center gap-2 p-2 md:p-4 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-600"
-        style={{ marginTop: "3rem" }}
+        className="m-auto w-fit p-2 md:p-4 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-600"
+        style={{ marginTop: "2rem" }}
         title="Change photo"
         onClick={() => setModalOpen(true)}
       >
-        <PencilIcon className="w-6 h-6" />{" "}
-        {/* Adicionando classe de tamanho para o ícone */}
-        <span className="ml-2">Select your photo</span>{" "}
-        {/* Adicionando margem à esquerda do texto */}
+        <PencilIcon />
       </button>
 
       {modalOpen && (
