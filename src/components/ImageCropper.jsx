@@ -64,7 +64,7 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
           type="file"
           accept="image/*"
           onChange={onSelectFile}
-          className="block w-full text-xl text-slate-500 file:mr-4 file:py-3 file:px-3 file:rounded-full file:border-0 file:text-xl file:bg-gray-700 file:text-sky-300 hover:file:bg-gray-600"
+          className="block w-full text-xs text-slate-500 file:mr-4 file:py-3 file:px-3 file:rounded-full file:border-0 file:text-base file:bg-gray-700 file:text-sky-300 hover:file:bg-gray-600"
         />
       </label>
       {error && <p className="text-red-400 text-xs">{error}</p>}
