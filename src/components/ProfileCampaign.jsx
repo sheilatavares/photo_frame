@@ -6,15 +6,27 @@ import CoverImage2 from "../img/frame_harris_for_people.png";
 import CoverImage3 from "../img/frame_harris_ukraine_strips.png";
 import CoverImage4 from "../img/frame_harris_ukraine.png";
 import CoverImage5 from "../img/frame_harris_win.png";
+import frameModel1 from "../img/models/frame_model_1.png";
+import frameModel2 from "../img/models/frame_model_2.png";
+import frameModel3 from "../img/models/frame_model_3.png";
+import frameModel4 from "../img/models/frame_model_4.png";
+import frameModel5 from "../img/models/frame_model_5.png";
 import "./Profile.css";
 
 const ProfileCampaign = () => {
-  const avatarUrl = useRef(null); // Começa vazio
-  const [step, setStep] = useState(0); // Controle das etapas: 0 = Start, 1 = Escolher Frame, 2 = Escolher Foto, 3 = Combinado
+  const avatarUrl = useRef(null);
+  const [step, setStep] = useState(0);
   const [selectedFrame, setSelectedFrame] = useState(null);
   const [combinedImageUrl, setCombinedImageUrl] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+  const frameModels = [
+    frameModel1,
+    frameModel2,
+    frameModel3,
+    frameModel4,
+    frameModel5,
+  ];
   const frames = [
     CoverImage1,
     CoverImage2,
@@ -25,111 +37,139 @@ const ProfileCampaign = () => {
 
   const updateAvatar = (imgSrc) => {
     avatarUrl.current = imgSrc;
-    setStep(3); // Avança para o próximo passo (combinar e cortar)
+    setStep(1);
   };
 
-  useEffect(() => {
-    if (avatarUrl.current && selectedFrame) {
-      const avatarImage = new Image();
-      const coverImage = new Image();
+  // Combinar a foto recortada com um frame selecionado
+  // const combineImageWithFrame = (frameSrc, callback) => {
+  //   if (avatarUrl.current) {
+  //     const avatarImage = new Image();
+  //     const frameImage = new Image();
 
-      avatarImage.src = avatarUrl.current;
-      coverImage.src = selectedFrame;
+  //     avatarImage.src = avatarUrl.current;
+  //     frameImage.src = frameSrc;
 
-      avatarImage.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
+  //     avatarImage.onload = () => {
+  //       const canvas = document.createElement("canvas");
+  //       const ctx = canvas.getContext("2d");
 
-        // Ajusta o tamanho do canvas
-        const canvasWidth = Math.min(coverImage.width, 300);
-        const canvasHeight = Math.min(coverImage.height, 300);
+  //       const canvasWidth = 150; // Tamanho do preview
+  //       const canvasHeight = 150;
 
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
+  //       canvas.width = canvasWidth;
+  //       canvas.height = canvasHeight;
 
-        // Define o raio para o recorte circular
-        const radius = Math.min(canvasWidth, canvasHeight) / 2;
+  //       const frameSize = Math.min(canvasWidth, canvasHeight);
+  //       const radius = frameSize / 2 - 28;
+  //       const avatarSize = radius * 2;
+  //       const avatarX = canvasWidth / 2 - avatarSize / 2;
+  //       const avatarY = canvasHeight / 2 - avatarSize / 2;
 
-        // Desenha a imagem do avatar com um recorte circular
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(canvasWidth / 2, canvasHeight / 2, radius - 28, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.clip();
+  //       // Desenha o avatar recortado em círculo
+  //       ctx.save();
+  //       ctx.beginPath();
+  //       ctx.arc(canvasWidth / 2, canvasHeight / 2, radius, 0, 2 * Math.PI);
+  //       ctx.closePath();
+  //       ctx.clip();
+  //       ctx.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
+  //       ctx.restore();
 
-        const avatarSize = (radius - 28) * 2;
-        const avatarX = canvasWidth / 2 - avatarSize / 2;
-        const avatarY = canvasHeight / 2 - avatarSize / 2;
+  //       // Desenha o frame
+  //       ctx.drawImage(frameImage, 0, 0, canvasWidth, canvasHeight);
 
-        ctx.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
-        ctx.restore();
+  //       // Gera a URL da imagem combinada
+  //       canvas.toBlob((blob) => {
+  //         const combinedImageURL = URL.createObjectURL(blob);
+  //         callback(combinedImageURL);
+  //       }, "image/png");
+  //     };
+  //   }
+  // };
 
-        // Desenha a imagem de fundo (frame)
-        ctx.drawImage(coverImage, 0, 0, canvasWidth, canvasHeight);
+  // const handleFrameSelection = (frameSrc) => {
+  //   combineImageWithFrame(frameSrc, (combinedUrl) => {
+  //     setCombinedImageUrl(combinedUrl); // Guarda a imagem finalf
+  //     setSelectedFrame(frameSrc); // Marca o frame selecionado
+  //     setStep(2); // Avança para o passo final
+  //   });
+  // };
 
-        // Gera a URL do blob
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = combinedImageUrl;
+    link.download = "frame_support.png";
+    link.click();
+  };
+
+  const drawCanvas = () => {
+    const canvas = document.getElementById("finalCanvas");
+    const context = canvas.getContext("2d");
+
+    const avatarImage = new Image();
+    const frameImage = new Image();
+
+    avatarImage.src = avatarUrl.current;
+    frameImage.src = selectedFrame;
+
+    avatarImage.onload = () => {
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const radius = Math.min(canvasWidth, canvasHeight) / 2 - 35; // Ajuste para o recorte circular
+      const avatarSize = radius * 2;
+      const avatarX = canvasWidth / 2 - avatarSize / 2;
+      const avatarY = canvasHeight / 2 - avatarSize / 2;
+
+      // Recorte circular para o avatar
+      context.save();
+      context.beginPath();
+      context.arc(canvasWidth / 2, canvasHeight / 2, radius, 0, 2 * Math.PI);
+      context.closePath();
+      context.clip();
+      context.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
+      context.restore();
+
+      // Desenha o frame sobre o avatar
+      frameImage.onload = () => {
+        context.drawImage(frameImage, 0, 0, canvas.width, canvas.height);
+
+        // Converter o canvas para uma URL de imagem e atualizar o estado
         canvas.toBlob((blob) => {
           const combinedImageURL = URL.createObjectURL(blob);
           setCombinedImageUrl(combinedImageURL);
         }, "image/png");
       };
-    }
-  }, [avatarUrl.current, selectedFrame]);
-
-  const handleDownload = () => {
-    if (combinedImageUrl) {
-      const link = document.createElement("a");
-      link.href = combinedImageUrl;
-      link.download = "combined_image.png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    };
   };
 
-  return (
-    <div className="flex flex-col items-center pt-12 row">
-      {step === 0 && (
-        <button
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => setStep(1)}
-        >
-          Start
-        </button>
-      )}
+  // Chame essa função quando o step for 2
+  useEffect(() => {
+    if (step === 2) {
+      drawCanvas();
+    }
+  }, [step]);
 
-      {step === 1 && (
-        <div className="flex flex-col items-center col-6">
-          <h2 className="mb-4">Choose a Frame</h2>
-          <div className="flex gap-4">
-            {frames.map((frame, index) => (
+  return (
+    <div className="flex flex-col items-center pt-12 row p-4 sm:p-8">
+      {step === 0 && (
+        <div className="flex flex-col items-center col-12">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {frameModels.map((frame, index) => (
               <img
                 key={index}
                 src={frame}
                 alt={`Frame ${index + 1}`}
-                className="w-32 h-32 cursor-pointer border-2 border-gray-300 hover:border-gray-500"
-                onClick={() => {
-                  setSelectedFrame(frame);
-                  setStep(2); // Avança para a etapa de selecionar a foto
-                }}
+                className="w-24 h-24 sm:w-32 sm:h-32"
               />
             ))}
           </div>
-        </div>
-      )}
-
-      {step === 2 && (
-        <div className="flex flex-col items-center col-12">
           <button
             className="m-auto flex items-center justify-center gap-2 p-2 md:p-4 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-600"
             style={{ marginTop: "3rem" }}
-            title="Change photo"
             onClick={() => setModalOpen(true)}
           >
-            <PencilIcon className="w-6 h-6" />{" "}
-            <span className="ml-2">Select your photo</span>
+            <PencilIcon className="w-6 h-6" />
+            <span className="ml-2 text-sm sm:text-base">Select your photo</span>
           </button>
-
           {modalOpen && (
             <Modal2
               updateAvatar={updateAvatar}
@@ -139,16 +179,119 @@ const ProfileCampaign = () => {
         </div>
       )}
 
-      {step === 3 && combinedImageUrl && (
+      {step === 1 && (
+        <div className="flex flex-col items-left col-12">
+          <h2 className="mb-4 text-lg sm:text-2xl text-white text-center">
+            Choose a Frame
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-12 sm:gap-4 justify-items-left mb-5">
+            {frames.map((frame, index) => (
+              <div key={index} className="relative w-24 h-24 sm:w-32 sm:h-32">
+                <canvas
+                  ref={(el) => {
+                    if (el && avatarUrl.current) {
+                      const ctx = el.getContext("2d");
+                      const avatarImage = new Image();
+                      const frameImage = new Image();
+
+                      avatarImage.src = avatarUrl.current;
+                      frameImage.src = frame;
+
+                      avatarImage.onload = () => {
+                        const canvasWidth = el.width;
+                        const canvasHeight = el.height;
+
+                        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+                        // Defina o recorte circular da imagem do avatar
+                        const radius =
+                          Math.min(canvasWidth, canvasHeight) / 2 - 18;
+                        const avatarSize = radius * 2;
+                        const avatarX = canvasWidth / 2 - avatarSize / 2;
+                        const avatarY = canvasHeight / 2 - avatarSize / 2;
+
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(
+                          canvasWidth / 2,
+                          canvasHeight / 2,
+                          radius,
+                          0,
+                          2 * Math.PI
+                        );
+                        ctx.closePath();
+                        ctx.clip();
+
+                        // Desenha a imagem do avatar primeiro
+                        ctx.drawImage(
+                          avatarImage,
+                          avatarX,
+                          avatarY,
+                          avatarSize,
+                          avatarSize
+                        );
+                        ctx.restore();
+
+                        // Desenha a imagem do frame sobre o avatar
+                        ctx.drawImage(
+                          frameImage,
+                          0,
+                          0,
+                          canvasWidth,
+                          canvasHeight
+                        );
+                      };
+                    }
+                  }}
+                  width={130}
+                  height={130}
+                  className="cursor-pointer border-2 border-gray-300 hover:border-gray-500"
+                  onClick={() => {
+                    setSelectedFrame(frame);
+                    setStep(2); // Avança para o próximo passo
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {step === 2 && (
         <div className="flex flex-col items-center col-12">
-          <h2 className="mb-4">Preview & Download</h2>
-          <img src={combinedImageUrl} alt="Combined Image" className="mb-4" />
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={handleDownload}
-          >
-            Download Combined Image
-          </button>
+          <h2 className="mb-4 text-lg sm:text-2xl text-white">Your Frame:</h2>
+          <canvas
+            id="finalCanvas"
+            width="300"
+            height="300"
+            style={{ display: "none" }}
+          ></canvas>
+          <img
+            src={combinedImageUrl}
+            alt="Combined Frame"
+            className="mb-4"
+            style={{ width: "300px", height: "300px" }}
+          />
+          <div className="flex gap-4 px-4">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleDownload}
+            >
+              Download
+            </button>
+            <button
+              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => setStep(1)}
+            >
+              Choose another frame
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => setStep(0)}
+            >
+              Restart
+            </button>
+          </div>
         </div>
       )}
     </div>
