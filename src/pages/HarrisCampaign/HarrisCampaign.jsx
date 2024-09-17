@@ -6,18 +6,18 @@ import { NavLink } from "react-router-dom";
 function HarrisCampaign() {
   return (
     <div className="bg-gray-900 text-gray-400 min-h-screen">
-      <div className="flex flex-col items-center w-full pt-2 px-4 mb-4">
+      <div className="flex flex-col items-center w-full pt-2 px-4 mb-5">
         <a
           href="https://codingforukraine.org/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img src={logoCoding} width={130} alt="Logo" />
+          <img src={logoCoding} width={100} alt="Logo" />
         </a>
       </div>
 
       <h1
-        className="text-3xl font-bold mb-4 text-white text-center text-uppercase"
+        className="text-3xl font-bold mb-0 text-white text-center text-uppercase"
         style={{ textTransform: "uppercase" }}
       >
         Show your support for Kamala Harris
@@ -29,8 +29,8 @@ function HarrisCampaign() {
           Ukraine. You can join us here:
         </small>
         <NavLink
-          to="/donate"
-          className="btn rounded-full text-center bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 transition-colors"
+          to="https://donorbox.org/codingforukraine"
+          className="btn rounded-full text-center bg-blue-500 mb-5 text-white px-4 py-2 hover:bg-blue-600 transition-colors"
           style={{ width: "150px" }}
         >
           Donate

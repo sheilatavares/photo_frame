@@ -1,5 +1,12 @@
 /* Profile.css */
 
+.imgAvatar {
+  clip-path: circle(50% at 50% 50%);
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
 @media (min-width: 768px) {
   /* Medium screen styles */
   .md\:p-4 {
@@ -16,5 +23,14 @@
   }
   .md\:h-80 {
     height: 20rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .imgAvatar {
+    clip-path: circle(50% at 50% 50%);
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
   }
 }

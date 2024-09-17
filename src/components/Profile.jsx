@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import PencilIcon from "./PencilIcon";
 import Modal2 from "./Modal2";
 import CoverImage from "../img/photo_frame_ukraine2.png";
-import "./Profile.css"; // Import the new stylesheet
+import styles from "./Profile.module.css";
 
 const Profile = () => {
   const avatarUrl = useRef(

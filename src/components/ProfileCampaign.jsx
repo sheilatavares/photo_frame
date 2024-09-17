@@ -11,7 +11,7 @@ import frameModel2 from "../img/models/frame_model_2.png";
 import frameModel3 from "../img/models/frame_model_3.png";
 import frameModel4 from "../img/models/frame_model_4.png";
 import frameModel5 from "../img/models/frame_model_5.png";
-import "./Profile.css";
+import styles from "./Profile.module.css";
 
 const ProfileCampaign = () => {
   const avatarUrl = useRef(null);
@@ -141,7 +141,6 @@ const ProfileCampaign = () => {
     };
   };
 
-  // Chame essa função quando o step for 2
   useEffect(() => {
     if (step === 2) {
       drawCanvas();
@@ -184,72 +183,26 @@ const ProfileCampaign = () => {
           <h2 className="mb-4 text-lg sm:text-2xl text-white text-center">
             Choose a Frame
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-2 gap-12 sm:gap-4 justify-items-left mb-5">
+          <div className="relative w-full flex flex-wrap justify-center gap-4 mb-5">
             {frames.map((frame, index) => (
-              <div key={index} className="relative w-24 h-24 sm:w-32 sm:h-32">
-                <canvas
-                  ref={(el) => {
-                    if (el && avatarUrl.current) {
-                      const ctx = el.getContext("2d");
-                      const avatarImage = new Image();
-                      const frameImage = new Image();
-
-                      avatarImage.src = avatarUrl.current;
-                      frameImage.src = frame;
-
-                      avatarImage.onload = () => {
-                        const canvasWidth = el.width;
-                        const canvasHeight = el.height;
-
-                        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-                        // Defina o recorte circular da imagem do avatar
-                        const radius =
-                          Math.min(canvasWidth, canvasHeight) / 2 - 18;
-                        const avatarSize = radius * 2;
-                        const avatarX = canvasWidth / 2 - avatarSize / 2;
-                        const avatarY = canvasHeight / 2 - avatarSize / 2;
-
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.arc(
-                          canvasWidth / 2,
-                          canvasHeight / 2,
-                          radius,
-                          0,
-                          2 * Math.PI
-                        );
-                        ctx.closePath();
-                        ctx.clip();
-
-                        // Desenha a imagem do avatar primeiro
-                        ctx.drawImage(
-                          avatarImage,
-                          avatarX,
-                          avatarY,
-                          avatarSize,
-                          avatarSize
-                        );
-                        ctx.restore();
-
-                        // Desenha a imagem do frame sobre o avatar
-                        ctx.drawImage(
-                          frameImage,
-                          0,
-                          0,
-                          canvasWidth,
-                          canvasHeight
-                        );
-                      };
-                    }
-                  }}
-                  width={130}
-                  height={130}
-                  className="cursor-pointer border-2 border-gray-300 hover:border-gray-500"
-                  onClick={() => {
-                    setSelectedFrame(frame);
-                    setStep(2); // Avança para o próximo passo
-                  }}
+              <div
+                key={index}
+                className="relative w-24 h-24 sm:w-32 sm:h-32 flex items-center justify-center"
+                onClick={() => {
+                  setSelectedFrame(frame);
+                  setStep(2); // Avança para o próximo passo
+                }}
+              >
+                <img
+                  src={avatarUrl.current}
+                  alt="Avatar"
+                  className={`${styles.imgAvatar} absolute object-cover`}
+                />
+                <img
+                  src={frame}
+                  alt={`Frame ${index}`}
+                  width="128px"
+                  className="relative w-full h-full object-cover cursor-pointer border-2 border-gray-300 hover:border-gray-500"
                 />
               </div>
             ))}
